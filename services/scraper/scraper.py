@@ -1,8 +1,8 @@
 import requests
 
 from .config import BASE_URL
-from .parser_factory import ParserFactory
 from .enums import ScraperOption
+from .parser_factory import ParserFactory
 
 
 class Scraper:
@@ -28,7 +28,7 @@ class Scraper:
             print(f"Parser for {self.option} not implemented")
             return None
 
-    def get_data(self):
+    def scrape(self):
         html = self.fetch_data()
         if html:
             return self.parse_data(html)

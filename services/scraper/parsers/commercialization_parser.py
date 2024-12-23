@@ -2,9 +2,6 @@ import pandas as pd
 
 from bs4 import BeautifulSoup
 
-from scraper.parser_factory import ParserFactory
-from scraper.enums import ScraperOption
-
 
 def parse_commercialization(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -12,5 +9,3 @@ def parse_commercialization(html):
     df = pd.read_html(str(table))[0]
 
     return df
-
-ParserFactory.register_parser(ScraperOption.COMMERCIALIZATION, parse_commercialization)

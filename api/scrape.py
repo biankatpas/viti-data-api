@@ -1,8 +1,14 @@
-from scraper.scraper import Scraper
-from scraper.enums import ScraperOption
+from services.scraper.enums import ScraperOption
+from services.scraper import Scraper
 
 
-def scraper_ingestion(year):
+def perform_scrape(year):
+    scraped_data = scrape_all_data(year)
+    print("Scraping data updated.")
+
+    return scraped_data,
+    
+def scrape_all_data(year):
     options = [
         ScraperOption.PRODUCTION,
         ScraperOption.PROCESSING,
@@ -10,13 +16,14 @@ def scraper_ingestion(year):
         ScraperOption.IMPORT,
         ScraperOption.EXPORT
     ]
+
     scraped_data = {}
 
     for option in options:
         print(f"Scraping data for {option.name} for year {year}...")
 
         scraper = Scraper(year=year, option=option)
-        data = scraper.get_data()
+        data = scraper.scrape()
 
         if data is not None:
             scraped_data[option] = data

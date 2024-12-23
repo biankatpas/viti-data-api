@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ScraperOption(Enum):
     PRODUCTION = "opt_02"
     PROCESSING = "opt_03"

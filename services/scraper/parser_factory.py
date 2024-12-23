@@ -1,5 +1,6 @@
 from .enums import ScraperOption
 
+
 class ParserFactory:
     _parsers = {}
 
