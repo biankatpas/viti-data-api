@@ -1,8 +1,13 @@
+import logging
 import requests
 
-from .config import BASE_URL
+from config import BASE_URL
 from .enums import ScraperOption
+
 from .parser_factory import ParserFactory
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Scraper:
@@ -16,7 +21,7 @@ class Scraper:
         if response.status_code == 200:
             return response.text
         else:
-            print(f"Error accessing the page: {self.url}")
+            logger.error(f"Error accessing the page: {self.url}")
             return None
 
     def parse_data(self, html):
@@ -25,7 +30,7 @@ class Scraper:
         if parser:
             return parser(html)
         else:
-            print(f"Parser for {self.option} not implemented")
+            logger.error(f"Parser for {self.option} not implemented")
             return None
 
     def scrape(self):

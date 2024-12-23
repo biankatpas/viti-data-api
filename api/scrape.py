@@ -1,34 +1,39 @@
+import logging
+
+import services.scraper.parsers
+
 from services.scraper.enums import ScraperOption
 from services.scraper import Scraper
+from services.scraper.parser_factory import ParserFactory
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def perform_scrape(year):
     scraped_data = scrape_all_data(year)
-    print("Scraping data updated.")
+    return scraped_data
 
-    return scraped_data,
-    
 def scrape_all_data(year):
-    options = [
-        ScraperOption.PRODUCTION,
-        ScraperOption.PROCESSING,
-        ScraperOption.COMMERCIALIZATION,
-        ScraperOption.IMPORT,
-        ScraperOption.EXPORT
-    ]
-
     scraped_data = {}
 
-    for option in options:
-        print(f"Scraping data for {option.name} for year {year}...")
+    for option in ScraperOption:
+        parser = ParserFactory.get_parser(option)
+        if parser is None:
+            logger.warning(f"No parser registered for {option.name}. Skipping...")
+            continue
 
         scraper = Scraper(year=year, option=option)
-        data = scraper.scrape()
+        try:
+            data = scraper.scrape()
+        except Exception as e:
+            logger.error(f"Error scraping data for {option.name}: {e}")
+            data = None
 
-        if data is not None:
-            scraped_data[option] = data
-            print(f"Data for {option.name} scraped successfully.")
-        else:
-            print(f"No data found for {option.name}.")
+        if data is None:
+            logger.warning(f"No data found for {option.name}.")
 
+        scraped_data[option.name] = data
+
+    logger.info(scraped_data)
     return scraped_data
