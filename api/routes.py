@@ -7,13 +7,14 @@ router = APIRouter()
 
 
 @router.get("/scrape")
-async def scrape_endpoint(year: int):
+async def scrape_route(year: int, page: str):
     """
-    Endpoint to trigger data scrape for a specific year.
+    Endpoint to trigger page scrape for a specific year.
     """
 
     # TODO: store scraped data
-    data = perform_scrape(year)
+    data = perform_scrape(year, page)
+    print(data)
 
     response_content = {}
     return JSONResponse(

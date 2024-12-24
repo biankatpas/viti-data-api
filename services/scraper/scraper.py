@@ -2,19 +2,19 @@ import logging
 import requests
 
 from config import BASE_URL
-from .enums import ScraperOption
 
-from .parser_factory import ParserFactory
+from .scraper_enums import ScraperPages
+from .scraper_parsers import ScraperParsers
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class Scraper:
-    def __init__(self, year, option: ScraperOption):
+    def __init__(self, year, page: ScraperPages):
         self.year = year
-        self.option = option
-        self.url = f"{BASE_URL}?ano={year}&opcao={option.value}"
+        self.page = page
+        self.url = f"{BASE_URL}?ano={year}&opcao={page.value}"
 
     def fetch_data(self):
         response = requests.get(self.url)
@@ -25,12 +25,12 @@ class Scraper:
             return None
 
     def parse_data(self, html):
-        parser = ParserFactory.get_parser(self.option)
+        parser = ScraperParsers.get_parser(self.page)
 
         if parser:
-            return parser(html)
+            return parser.parse(html)
         else:
-            logger.error(f"Parser for {self.option} not implemented")
+            logger.error(f"Parser for {self.page} not implemented")
             return None
 
     def scrape(self):
