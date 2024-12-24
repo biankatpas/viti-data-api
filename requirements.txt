@@ -5,3 +5,5 @@ beautifulsoup4
 pandas
 python-dotenv
 lxml
+sqlalchemy
+psycopg2
