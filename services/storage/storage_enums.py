@@ -14,3 +14,10 @@ class PageModelMapping(Enum):
     COMMERCIALIZATION = Commercialization
     IMPORT = Import
     EXPORT = Export
+
+ColumnKeyMapping = {
+    "Produto": "product",
+    "Quantidade (L.)": "quantity",
+    "Valor": "value",
+    "País": "country",
+}

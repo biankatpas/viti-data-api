@@ -1,4 +1,5 @@
 from .storage_enums import PageModelMapping
+from .storage_enums import ColumnKeyMapping
 from services.storage.db_handler import DBHandler
 
 # Create a global instance of DBHandler
