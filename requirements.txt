@@ -6,4 +6,4 @@ pandas
 python-dotenv
 lxml
 sqlalchemy
-psycopg2
+psycopg2-binary

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from sqlalchemy.orm import Session
 from models import Base
 from api.routes import router
-from services.store.db_handler import engine
+from services.storage.db_handler import engine
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -20,7 +20,10 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     logger.info("Database initialized.")
 
+@app.on_event("startup")
+async def startup_event():
+    init_db()
+
 if __name__ == "__main__":
     import uvicorn
-    init_db()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
