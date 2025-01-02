@@ -28,4 +28,4 @@ def scrape_data(year, page):
         logger.error(f"Error scraping data for {page}: {e}")
         data = None
 
-    return {page: data}
+    return data
