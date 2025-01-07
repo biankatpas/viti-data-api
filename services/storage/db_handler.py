@@ -35,11 +35,31 @@ class DBHandler:
             The created model instance.
         """
         try:
-            instance = model(**kwargs)
-            self.db.add(instance)
-            self.db.commit()
-            self.db.refresh(instance)
+            sanitized_data = self.sanitize_data(kwargs)
+
+            instance = model(**sanitized_data)
+            db.add(instance)
+            db.commit()
+            db.refresh(instance)
             return instance
         except Exception as e:
-            self.db.rollback()
+            db.rollback()
             raise e
+
+    def sanitize_data(self, data: dict) -> dict:
+            """
+            Sanitize data before storing it in the database.
+
+            Args:
+                data (dict): Data to sanitize.
+
+            Returns:
+                dict: Sanitized data.
+            """
+            sanitized_data = data.copy()
+
+            # Sanitize the `quantity` field
+            if "quantity" in sanitized_data and isinstance(sanitized_data["quantity"], str):
+                sanitized_data["quantity"] = int(sanitized_data["quantity"].replace(".", "")) if sanitized_data["quantity"] != "-" else None
+
+            return sanitized_data

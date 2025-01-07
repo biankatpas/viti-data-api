@@ -1,5 +1,8 @@
+import time
 import logging
 import requests
+
+from requests.exceptions import RequestException
 
 from config import BASE_URL
 
@@ -16,13 +19,30 @@ class Scraper:
         self.page = page
         self.url = f"{BASE_URL}?ano={year}&opcao={page.value}"
 
-    def fetch_data(self):
-        response = requests.get(self.url)
-        if response.status_code == 200:
-            return response.text
-        else:
-            logger.error(f"Error accessing the page: {self.url}")
-            return None
+    def fetch_data(self, retries=3, backoff_factor=2):
+        """
+        Fetch the page data with retry logic.
+
+        Args:
+            retries (int): Number of retry attempts.
+            backoff_factor (int): Backoff multiplier for retry delays.
+
+        Returns:
+            str: HTML content of the page if successful, None otherwise.
+        """
+        for attempt in range(retries):
+            try:
+                logger.info(f"Fetching data from {self.url} (Attempt {attempt + 1})")
+                response = requests.get(self.url, timeout=10)
+                response.raise_for_status()  # Raise HTTPError for bad responses
+                return response.text
+            except RequestException as e:
+                logger.warning(f"Attempt {attempt + 1} failed: {e}")
+                if attempt < retries - 1:
+                    time.sleep(backoff_factor * (2 ** attempt))
+                else:
+                    logger.error(f"All retry attempts failed for {self.url}")
+                    raise e
 
     def parse_data(self, html):
         parser = ScraperParsers.get_parser(self.page)
@@ -34,6 +54,9 @@ class Scraper:
             return None
 
     def scrape(self):
+        """
+        Perform scraping by fetching and parsing data.
+        """
         html = self.fetch_data()
         if html:
             return self.parse_data(html)

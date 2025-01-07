@@ -1,3 +1,5 @@
+import requests
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -40,5 +42,13 @@ async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
 
         return {"status": "success", "message": f"Data for {page}/{year} stored successfully."}
 
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Failed to fetch data for {page}/{year}. Reason: {str(e)}"
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
