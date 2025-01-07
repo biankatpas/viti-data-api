@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, BigInteger
+from sqlalchemy import Column, Integer, String, BigInteger
 
 from .base import Base
 
@@ -10,4 +10,4 @@ class Import(Base):
     year = Column(Integer, nullable=False)
     country = Column(String, nullable=False)
     quantity = Column(BigInteger, nullable=True)
-    value = Column(Numeric(10, 2), nullable=True)
+    value = Column(BigInteger, nullable=True)

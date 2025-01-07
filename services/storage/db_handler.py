@@ -61,5 +61,9 @@ class DBHandler:
             # Sanitize the `quantity` field
             if "quantity" in sanitized_data and isinstance(sanitized_data["quantity"], str):
                 sanitized_data["quantity"] = int(sanitized_data["quantity"].replace(".", "")) if sanitized_data["quantity"] != "-" else None
+            # Sanitize the `value` field
+            if "value" in sanitized_data and isinstance(sanitized_data["value"], str):
+                sanitized_data["value"] = int(sanitized_data["value"].replace(".", "")) if sanitized_data["value"] != "-" else None
+
 
             return sanitized_data

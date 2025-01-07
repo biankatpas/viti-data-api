@@ -18,6 +18,10 @@ class PageModelMapping(Enum):
 ColumnKeyMapping = {
     "Produto": "product",
     "Quantidade (L.)": "quantity",
+    "Quantidade (Kg)": "quantity",
     "Valor": "value",
+    "Valor (US$)": "value",
     "País": "country",
+    "Países": "country",
+    "Cultivar": "variety",
 }
