@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger
+from sqlalchemy import Column, Integer, String, BigInteger, UniqueConstraint
 
 from .base import Base
 
@@ -10,3 +10,7 @@ class Processing(Base):
     year = Column(Integer, nullable=False)
     variety = Column(String, nullable=False)
     quantity = Column(BigInteger, nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint("year", "variety", name="uq_processing_year_variety"),
+    )
