@@ -46,6 +46,26 @@ class DBHandler:
             db.rollback()
             raise e
 
+    def retrieve(self, db: Session, model, years: list = None) -> list:
+        """
+        Retrieve all rows from a given table.
+
+        Args:
+            db (Session): SQLAlchemy session instance.
+            model (Base): SQLAlchemy model class.
+            years (list, optional): List of years to filter by. If None, retrieves all rows.
+
+        Returns:
+            list: List of all rows from the table.
+        """
+        try:
+            if years:
+                return db.query(model).filter(model.year.in_(years)).all()
+            return db.query(model).all()
+        except Exception as e:
+            logger.error(f"Error retrieving data from {model.__tablename__}: {e}")
+            raise e
+
     def sanitize_data(self, data: dict) -> dict:
             """
             Sanitize data before storing it in the database.
