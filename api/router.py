@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from services.storage import db_handler, get_db, PageModelMapping
-from .scrape import perform_scrape
-from .retrieve import (
+from .routes.scrape import perform_scrape
+from .routes.retrieve import (
     get_imports, get_exports, get_production, get_commercialization, get_processing, get_years_as_list
 )
 

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from services.storage import db_handler
-from api.routes import router
+from api.router import router
 
 app = FastAPI()
 app.include_router(router)
