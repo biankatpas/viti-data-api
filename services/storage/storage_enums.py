@@ -26,27 +26,27 @@ class PageModelMapping(Enum):
     IMPORT = Import
     EXPORT = Export
 
-ColumnKeyMapping =
-"""
-Maps column names from scraped HTML tables to database field names.
+ColumnKeyMapping = {
+    """
+    Maps column names from scraped HTML tables to database field names.
 
-Key (str): The column name as it appears in the scraped HTML.
-Value (str): The corresponding field name in the database model.
+    Key (str): The column name as it appears in the scraped HTML.
+    Value (str): The corresponding field name in the database model.
 
-Example:
-    "Produto": "product" - Maps the column "Produto" to the database field "product".
+    Example:
+        "Produto": "product" - Maps the column "Produto" to the database field "product".
 
-Supported Keys:
-    - "Produto": Maps to "product".
-    - "Quantidade (L.)": Maps to "quantity".
-    - "Quantidade (Kg)": Maps to "quantity".
-    - "Valor": Maps to "value".
-    - "Valor (US$)": Maps to "value".
-    - "País": Maps to "country".
-    - "Países": Maps to "country".
-    - "Cultivar": Maps to "variety".
-"""
-{
+    Supported Keys:
+        - "Produto": Maps to "product".
+        - "Quantidade (L.)": Maps to "quantity".
+        - "Quantidade (Kg)": Maps to "quantity".
+        - "Valor": Maps to "value".
+        - "Valor (US$)": Maps to "value".
+        - "País": Maps to "country".
+        - "Países": Maps to "country".
+        - "Cultivar": Maps to "variety".
+    """
+    
     "Produto": "product",
     "Quantidade (L.)": "quantity",
     "Quantidade (Kg)": "quantity",

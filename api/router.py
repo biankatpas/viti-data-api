@@ -13,12 +13,72 @@ from .routes.retrieve import (
 router = APIRouter()
 
 
-@router.get("/scrape")
+@router.get(
+    "/scrape",
+    tags=["Scraping"],
+    summary="Scrape data for a specific year and page",
+    description=(
+        "Trigger a web scraping process to fetch data for a given year and page. "
+        "The scraped data is processed and stored in the database."
+    ),
+    responses={
+        200: {
+            "description": "Scraping completed successfully.",
+            "content": {
+                "application/json": {
+                    "example": {"status": "success", "message": "Data for PRODUCTION/2020 stored successfully."}
+                }
+            },
+        },
+        400: {
+            "description": "Invalid page provided.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid page: TEST. Must be one of ['PRODUCTION', 'PROCESSING', ...]."}
+                }
+            },
+        },
+        503: {
+            "description": "Failed to fetch data due to a request error.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Failed to fetch data for PRODUCTION/2020. Reason: Timeout error."}
+                }
+            },
+        },
+        500: {
+            "description": "An unexpected error occurred during scraping.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "An unexpected error occurred: Parser not found."}
+                }
+            },
+        },
+    },
+)
 async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
     """
-    Endpoint to trigger page scrape for a specific year.
+    Scrape data for a specific year and page.
+
+    This endpoint triggers a web scraping process for the specified year and page.
+    The scraped data is processed, validated, and stored in the database.
+
+    Args:
+        year (int): The year for which data is to be scraped.
+        page (str): The page to scrape, corresponding to a valid `ScraperPages` value.
+        db (Session): Database session dependency.
+
+    Returns:
+        JSONResponse: Status and message indicating the result of the scraping operation.
+
+    Raises:
+        HTTPException: 400 - If the page is invalid.
+        HTTPException: 503 - If there is a request error during scraping.
+        HTTPException: 500 - For any unexpected errors during scraping or storage.
     """
+
     try:
+        # Validate the page against PageModelMapping
         model = PageModelMapping[page.upper()].value
     except KeyError:
         raise HTTPException(
@@ -27,11 +87,13 @@ async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
         )
 
     try:
+        # Perform the scraping process
         scraped_data = perform_scrape(year, page.upper())
 
         if scraped_data.empty:
             return {"status": "error", "message": f"No data found for page {page}/{year}."}
 
+        # Store each row in the database
         for _, row in scraped_data.iterrows():
             row_data = {
                 **row.to_dict(),
@@ -56,22 +118,101 @@ async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
             detail=f"An unexpected error occurred: {str(e)}"
         )
 
-@router.get("/import")
+@router.get(
+    "/import",
+    tags=["Import Data"],
+    summary="Retrieve import data",
+    description=(
+        "Fetch import data from the database, optionally filtered by a list of years. "
+        "The years should be provided as a comma-separated string."
+    ),
+    responses={
+        200: {
+            "description": "Successfully retrieved import data.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": [
+                            {
+                                "id": 1,
+                                "year": 2020,
+                                "country": "USA",
+                                "quantity": 1000,
+                                "value": 50000
+                            },
+                            {
+                                "id": 2,
+                                "year": 2021,
+                                "country": "Canada",
+                                "quantity": 2000,
+                                "value": 75000
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        400: {
+            "description": "Invalid years format.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid format for years. Expected comma-separated integers."}
+                }
+            },
+        },
+        500: {
+            "description": "An unexpected error occurred.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "An unexpected error occurred while retrieving data."}
+                }
+            },
+        },
+    },
+)
 async def import_route(
     years: str = Query(default=None, description="Comma-separated years"), db: Session = Depends(get_db)
 ):
     """
     Retrieve import data.
+
+    Args:
+        years (str, optional): Comma-separated list of years to filter the data. Defaults to None.
+        db (Session): Database session provided via dependency injection.
+
+    Returns:
+        dict: Status and retrieved data as a list of dictionaries.
+
+    Raises:
+        HTTPException:
+            - 400: If the `years` string cannot be parsed into a list of integers.
+            - 500: For any unexpected errors during data retrieval.
     """
+
     try:
+        # Convert years string to a list of integers
         years_list = get_years_as_list(years)
         data = get_imports(db, years_list)
-        return {"status": "success", "data": [row.__dict__ for row in data]}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
+        # Convert SQLAlchemy objects to dictionaries for the response
+        formatted_data = [
+            {key: value for key, value in row.__dict__.items() if not key.startswith("_")}
+            for row in data
+        ]
+
+        return {"status": "success", "data": formatted_data}
+
+    except ValueError as e:
+        # Handle invalid years format
+        raise HTTPException(status_code=400, detail=str(e))
+
+    except Exception as e:
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
 
 @router.get("/export")
 async def export_route(
