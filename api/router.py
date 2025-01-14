@@ -214,38 +214,195 @@ async def import_route(
             detail=f"An unexpected error occurred: {str(e)}"
         )
 
-@router.get("/export")
+@router.get(
+    "/export",
+    tags=["Export Data"],
+    summary="Retrieve export data",
+    description=(
+        "Fetch export data from the database, optionally filtered by a list of years. "
+        "The years should be provided as a comma-separated string."
+    ),
+    responses={
+        200: {
+            "description": "Successfully retrieved export data.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": [
+                            {
+                                "id": 1,
+                                "year": 2020,
+                                "country": "Brazil",
+                                "quantity": 1000,
+                                "value": 50000
+                            },
+                            {
+                                "id": 2,
+                                "year": 2021,
+                                "country": "Argentina",
+                                "quantity": 2000,
+                                "value": 75000
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        400: {
+            "description": "Invalid years format.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid format for years. Expected comma-separated integers."}
+                }
+            },
+        },
+        500: {
+            "description": "An unexpected error occurred.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "An unexpected error occurred while retrieving data."}
+                }
+            },
+        },
+    },
+)
 async def export_route(
     years: str = Query(default=None, description="Comma-separated years"), db: Session = Depends(get_db)
 ):
     """
     Retrieve export data.
+
+    Args:
+        years (str, optional): Comma-separated list of years to filter the data. Defaults to None.
+        db (Session): Database session provided via dependency injection.
+
+    Returns:
+        dict: Status and retrieved data as a list of dictionaries.
+
+    Raises:
+        HTTPException:
+            - 400: If the `years` string cannot be parsed into a list of integers.
+            - 500: For any unexpected errors during data retrieval.
     """
+
     try:
+        # Convert years string to a list of integers
         years_list = get_years_as_list(years)
         data = get_exports(db, years_list)
-        return {"status": "success", "data": [row.__dict__ for row in data]}
+
+         # Convert SQLAlchemy objects to dictionaries for the response
+        formatted_data = [
+            {key: value for key, value in row.__dict__.items() if not key.startswith("_")}
+            for row in data
+        ]
+
+        return {"status": "success", "data": formatted_data}
+
     except ValueError as e:
+        # Handle invalid years format
         raise HTTPException(status_code=400, detail=str(e))
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
 
-
-@router.get("/production")
+@router.get(
+    "/production",
+    tags=["Production Data"],
+    summary="Retrieve production data",
+    description=(
+        "Fetch production data from the database, optionally filtered by a list of years. "
+        "The years should be provided as a comma-separated string."
+    ),
+    responses={
+        200: {
+            "description": "Successfully retrieved production data.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": [
+                            {
+                                "id": 1,
+                                "year": 2020,
+                                "product": "Wheat",
+                                "quantity": 1000
+                            },
+                            {
+                                "id": 2,
+                                "year": 2021,
+                                "product": "Corn",
+                                "quantity": 2000
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        400: {
+            "description": "Invalid years format.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid format for years. Expected comma-separated integers."}
+                }
+            },
+        },
+        500: {
+            "description": "An unexpected error occurred.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "An unexpected error occurred while retrieving data."}
+                }
+            },
+        },
+    },
+)
 async def production_route(
     years: str = Query(default=None, description="Comma-separated years"), db: Session = Depends(get_db)
 ):
     """
     Retrieve production data.
+
+    Args:
+        years (str, optional): Comma-separated list of years to filter the data. Defaults to None.
+        db (Session): Database session provided via dependency injection.
+
+    Returns:
+        dict: Status and retrieved data as a list of dictionaries.
+
+    Raises:
+        HTTPException:
+            - 400: If the `years` string cannot be parsed into a list of integers.
+            - 500: For any unexpected errors during data retrieval.
     """
+
     try:
+        # Convert years string to a list of integers
         years_list = get_years_as_list(years)
         data = get_production(db, years_list)
-        return {"status": "success", "data": [row.__dict__ for row in data]}
+
+        # Convert SQLAlchemy objects to dictionaries for the response
+        formatted_data = [
+            {key: value for key, value in row.__dict__.items() if not key.startswith("_")}
+            for row in data
+        ]
+
+        return {"status": "success", "data": formatted_data}
+
     except ValueError as e:
+        # Handle invalid years format
         raise HTTPException(status_code=400, detail=str(e))
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
 
 
 @router.get("/commercialization")
