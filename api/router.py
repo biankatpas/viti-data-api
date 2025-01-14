@@ -505,7 +505,7 @@ async def commercialization_route(
             for row in data
         ]
 
-        return {"status": "success", "data": formatted_data]}
+        return {"status": "success", "data": formatted_data}
 
     except ValueError as e:
         # Handle invalid years format
