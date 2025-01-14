@@ -4,6 +4,19 @@ from .base import Base
 
 
 class Commercialization(Base):
+    """
+    Represents the commercialization data table.
+
+    Attributes:
+        id (int): Primary key for the table.
+        year (int): The year associated with the commercialization data.
+        product (str): The product name.
+        quantity (int, optional): The quantity of the product sold.
+
+    Constraints:
+        - UniqueConstraint: Ensures that the combination of 'year' and 'product' is unique.
+    """
+
     __tablename__ = "commercialization"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
