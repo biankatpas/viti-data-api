@@ -519,7 +519,57 @@ async def commercialization_route(
         )
 
 
-@router.get("/processing")
+@router.get(
+    "/processing",
+    tags=["Processing Data"],
+    summary="Retrieve processing data",
+    description=(
+        "Fetch processing data from the database, optionally filtered by a list of years. "
+        "The years should be provided as a comma-separated string."
+    ),
+    responses={
+        200: {
+            "description": "Successfully retrieved processing data.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": [
+                            {
+                                "id": 1,
+                                "year": 2020,
+                                "variety": "Chardonnay",
+                                "quantity": 1500
+                            },
+                            {
+                                "id": 2,
+                                "year": 2021,
+                                "variety": "Pinot Noir",
+                                "quantity": 1200
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        400: {
+            "description": "Invalid years format.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid format for years. Expected comma-separated integers."}
+                }
+            },
+        },
+        500: {
+            "description": "An unexpected error occurred.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "An unexpected error occurred while retrieving data."}
+                }
+            },
+        },
+    },
+)
 async def processing_route(
     years: str = Query(
         default=None,
@@ -529,12 +579,40 @@ async def processing_route(
 ):
     """
     Retrieve processing data.
+
+    Args:
+        years (str, optional): Comma-separated list of years to filter the data. Defaults to None.
+        db (Session): Database session provided via dependency injection.
+
+    Returns:
+        dict: Status and retrieved data as a list of dictionaries.
+
+    Raises:
+        HTTPException:
+            - 400: If the `years` string cannot be parsed into a list of integers.
+            - 500: For any unexpected errors during data retrieval.
     """
+
     try:
+        # Convert years string to a list of integers
         years_list = get_years_as_list(years)
         data = get_processing(db, years_list)
-        return {"status": "success", "data": [row.__dict__ for row in data]}
+
+        # Convert SQLAlchemy objects to dictionaries for the response
+        formatted_data = [
+            {key: value for key, value in row.__dict__.items() if not key.startswith("_")}
+            for row in data
+        ]
+
+        return {"status": "success", "data": formatted_data}
+
     except ValueError as e:
+        # Handle invalid years format
         raise HTTPException(status_code=400, detail=str(e))
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
