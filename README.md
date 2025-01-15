@@ -2,6 +2,10 @@
 
 This REST API was developed using FastAPI to scrape, process, and store viticulture-related data such as production, processing, commercialization, import, and export information.
 
+## Data Source
+
+The data used in this API is scraped from [Embrapa's Viticulture and Enology Database](http://vitibrasil.cnpuv.embrapa.br/index.php).
+
 ## Core Features
 * Data Scraping: Retrieve data from external sources using a scraping engine.
 * Data Storage: Processed data is stored in a PostgreSQL database.
