@@ -6,11 +6,25 @@ This REST API was developed using FastAPI to scrape, process, and store viticult
 
 The data used in this API is scraped from [Embrapa's Viticulture and Enology Database](http://vitibrasil.cnpuv.embrapa.br/index.php).
 
-## Architecture Diagram
+## Architecture
+
+The Viticulture Data API simplifies the process of scraping, storing, and querying data related to viticulture. By leveraging FastAPI and PostgreSQL, the API automates the retrieval and structuring of data from Embrapa's Viticulture Database.
 
 ![API Architecture Diagram](resources/api-diagram.jpg)
 
-The above diagram illustrates the high-level architecture of the API.
+The above diagram illustrates the high-level architecture of the API. The diagram also highlights potential use cases enabled by the API:
+
+**1. Dashboards for Decision Support:**
+
+Data stored in the database can be visualized in user-friendly dashboards, enabling stakeholders to monitor key metrics such as production, imports, exports, and commercialization trends. These dashboards provide actionable insights for strategic planning.
+
+**2. Predictive Analytics for Production and Pricing:**
+
+Using the collected data, machine learning models can be developed to forecast future production needs, market demand, and pricing trends. This helps producers optimize their production levels and plan for fluctuations in market conditions.
+
+**3. Agricultural Resource Planning:**
+
+With historical and current data available, the API can support agricultural resource planning by predicting supply and demand cycles, allowing producers to allocate resources, and capital more effectively.
 
 ## Core Features
 * Data Scraping: Retrieve data from external sources using a scraping engine.
