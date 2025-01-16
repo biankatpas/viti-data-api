@@ -6,6 +6,12 @@ This REST API was developed using FastAPI to scrape, process, and store viticult
 
 The data used in this API is scraped from [Embrapa's Viticulture and Enology Database](http://vitibrasil.cnpuv.embrapa.br/index.php).
 
+## Architecture Diagram
+
+![API Architecture Diagram](resources/api-diagram.jpg)
+
+The above diagram illustrates the high-level architecture of the API.
+
 ## Core Features
 * Data Scraping: Retrieve data from external sources using a scraping engine.
 * Data Storage: Processed data is stored in a PostgreSQL database.
