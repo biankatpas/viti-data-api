@@ -33,18 +33,44 @@ class Scraper:
             Fetches and parses the data, returning it as a pandas DataFrame.
     """
 
-    def __init__(self, year, page: ScraperPages):
+    def __init__(self, year, page: ScraperPages, suboption: str = None):
         """
-        Initializes the Scraper with the specified year and page.
+        Initializes the Scraper with the specified year, page, and optional suboption.
+
+        The Scraper constructs the appropriate URL for scraping data based on the given year,
+        page, and suboption (if applicable). The URL format is as follows:
+            - For pages without suboptions: `{BASE_URL}?ano={year}&opcao={option}`
+            - For pages with suboptions: `{BASE_URL}?ano={year}&opcao={option}&subopcao={suboption}`
 
         Args:
             year (int): The year for which data is being scraped.
             page (ScraperPages): The page enum indicating which data to scrape.
+                                This determines the `option` in the URL.
+            suboption (str, optional): The suboption to scrape (if applicable).
+                                    Defaults to None.
+
+        Attributes:
+            year (int): The year being scraped.
+            page (ScraperPages): The ScraperPages enum instance indicating the target page.
+            option (str): The option value extracted from the page enum (used in the URL).
+            suboption (str or None): The suboption being scraped, if provided.
+            url (str): The constructed URL for scraping data.
+
+        Example:
+            Initialize a Scraper for the "PROCESSING" page with a specific suboption:
+                scraper = Scraper(year=2023, page=ScraperPages.PROCESSING, suboption="subopt_01")
+                print(scraper.url)
+                # Output: "{BASE_URL}?ano=2023&opcao=opt_03&subopcao=subopt_01"
         """
 
         self.year = year
         self.page = page
-        self.url = f"{BASE_URL}?ano={year}&opcao={page.value}"
+        self.option = page.value["option"]
+        self.suboption = suboption
+
+        self.url = f"{BASE_URL}?ano={year}&opcao={self.option}"
+        if self.suboption:
+            self.url += f"&subopcao={self.suboption}"
 
     def fetch_data(self, retries=3, backoff_factor=2):
         """
@@ -115,7 +141,7 @@ class Scraper:
         Logs:
             - Info: Logs the scraping process.
         """
-        
+
         html = self.fetch_data()
         if html:
             return self.parse_data(html)

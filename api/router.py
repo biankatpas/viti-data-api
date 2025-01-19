@@ -4,11 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-from services.storage import db_handler, get_db, PageModelMapping
-from .routes.scrape import perform_scrape
+from services.storage import get_db, PageModelMapping
+from .routes.scrape import perform_scrape, process_and_store_data
 from .routes.retrieve import (
     get_imports, get_exports, get_production, get_commercialization, get_processing, get_years_as_list
 )
+from services.scraper.scraper_enums import ScraperPages
 
 router = APIRouter()
 
@@ -79,6 +80,7 @@ async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
 
     try:
         # Validate the page against PageModelMapping
+        scraper_page = ScraperPages[page.upper()]
         model = PageModelMapping[page.upper()].value
     except KeyError:
         raise HTTPException(
@@ -88,21 +90,23 @@ async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
 
     try:
         # Perform the scraping process
-        scraped_data = perform_scrape(year, page.upper())
+        scraped_data = perform_scrape(
+            year=year,
+            page=scraper_page,
+        )
 
-        if scraped_data.empty:
+        if scraped_data is None:
             return {"status": "error", "message": f"No data found for page {page}/{year}."}
 
-        # Store each row in the database
-        for _, row in scraped_data.iterrows():
-            row_data = {
-                **row.to_dict(),
-                "year": year,
-            }
-            db_handler.store(
+        # Process and store data
+        results = {}
+        for suboption, data in scraped_data.items():
+            results[suboption] = process_and_store_data(
+                scraped_data=data,
                 db=db,
                 model=model,
-                **row_data
+                year=year,
+                suboption=suboption if suboption != "default" else None
             )
 
         return {"status": "success", "message": f"Data for {page}/{year} stored successfully."}
@@ -115,7 +119,7 @@ async def scrape_route(year: int, page: str, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"An unexpected error occurred: {str(e)}"
+            detail=f"TODO An unexpected error occurred: {str(e)}"
         )
 
 

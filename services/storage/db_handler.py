@@ -67,9 +67,6 @@ class DBHandler:
 
         Raises:
             Exception: If an error occurs during the database transaction.
-
-        Logs:
-            - Error: If an exception is raised during the transaction.
         """
 
         try:
@@ -133,7 +130,7 @@ class DBHandler:
             Output:
                 {"quantity": 1234, "value": 567890}
         """
-        
+
         sanitized_data = data.copy()
 
         # Sanitize the `quantity` field

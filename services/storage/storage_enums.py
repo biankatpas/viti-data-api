@@ -46,7 +46,7 @@ ColumnKeyMapping = {
         - "Países": Maps to "country".
         - "Cultivar": Maps to "variety".
     """
-    
+
     "Produto": "product",
     "Quantidade (L.)": "quantity",
     "Quantidade (Kg)": "quantity",
@@ -55,4 +55,45 @@ ColumnKeyMapping = {
     "País": "country",
     "Países": "country",
     "Cultivar": "variety",
+}
+
+SuboptionKeyMapping = {
+    """
+    Maps suboption identifiers to their corresponding classifications.
+
+    This dictionary is used to associate suboptions (e.g., "subopt_01") with human-readable
+    classifications for specific pages (e.g., "Import", "Export", "Processing").
+
+    Structure:
+        - Keys: Names of models (e.g., "Import", "Export", "Processing").
+        - Values: Nested dictionaries where:
+            - Keys: Suboption identifiers (e.g., "subopt_01").
+            - Values: Human-readable classifications (e.g., "Vinhos de mesa").
+
+    Usage:
+        Retrieve the classification for a specific suboption:
+            classification = SuboptionKeyMapping["Import"]["subopt_01"]
+            print(classification)  # Output: "Vinhos de mesa"
+
+    """
+
+    "Import": {
+        "subopt_01": "Vinhos de mesa",
+        "subopt_02": "Espumantes",
+        "subopt_03": "Uvas frescas",
+        "subopt_04": "Uvas passas",
+        "subopt_05": "Suco de uva",
+    },
+    "Export": {
+        "subopt_01": "Vinhos de mesa",
+        "subopt_02": "Espumantes",
+        "subopt_03": "Uvas frescas",
+        "subopt_04": "Suco de uva",
+    },
+    "Processing": {
+        "subopt_01": "Viniferas",
+        "subopt_02": "Americanas e hibridas",
+        "subopt_03": "Uvas de mesa",
+        "subopt_04": "Sem classificacao",
+    }
 }
