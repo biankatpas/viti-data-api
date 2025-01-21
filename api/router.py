@@ -14,6 +14,13 @@ from services.scraper.scraper_enums import ScraperPages
 router = APIRouter()
 
 
+@app.get("/")
+async def root():
+    """
+    Root endpoint for the API.
+    """
+    return JSONResponse(content={"message": "Welcome to the Viticulture Data API! Visit /docs for API documentation."})
+
 @router.get(
     "/scrape",
     tags=["Scraping"],
