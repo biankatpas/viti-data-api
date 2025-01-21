@@ -40,6 +40,18 @@ Check out the video demonstration of the Viticulture Data API in action:
 
 *Click the thumbnail or [here](https://youtu.be/AkkFmH58Zic) to watch on YouTube.*
 
+## API Availability
+
+The Viticulture Data API is now live and accessible at:
+
+👉 https://viti-data-api.onrender.com
+
+You can explore the interactive API documentation via Swagger UI at:
+
+👉 https://viti-data-api.onrender.com/docs
+
+Swagger UI at /docs provides interactive documentation of all endpoints, including request parameters and response formats.
+
 ## Running the Project
 
 Follow these steps to run the Viticulture Data API using Docker:
