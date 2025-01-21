@@ -32,6 +32,14 @@ With historical and current data available, the API can support agricultural res
 * API Endpoints: Access and query the stored data via dedicated endpoints.
 * Swagger Documentation: Interactive API documentation is available at /docs.
 
+## Demonstration Video
+
+Check out the video demonstration of the Viticulture Data API in action:
+
+[![Watch the Video](https://img.youtube.com/vi/<VIDEO_ID>/0.jpg)](https://youtu.be/AkkFmH58Zic)
+
+*Click the thumbnail or [here](https://youtu.be/AkkFmH58Zic) to watch on YouTube.*
+
 ## Running the Project
 
 Follow these steps to run the Viticulture Data API using Docker:
