@@ -55,7 +55,7 @@ class DBHandler:
 
     def store(self, db: Session, model, **kwargs):
         """
-        Stores data into the database.
+        Stores data into the database with an update-or-create approach.
 
         Args:
             db (Session): SQLAlchemy session instance.
@@ -70,16 +70,33 @@ class DBHandler:
         """
 
         try:
+            # Sanitize the data before processing
             sanitized_data = self.sanitize_data(kwargs)
 
-            instance = model(**sanitized_data)
-            db.add(instance)
+            # Build dynamic filters based on model columns
+            filters = {key: value for key, value in sanitized_data.items() if key in model.__table__.columns.keys()}
+
+            # Check for an existing instance
+            instance = db.query(model).filter_by(**filters).first()
+
+            if instance:
+                # Update existing record
+                for key, value in sanitized_data.items():
+                    if key in model.__table__.columns.keys():
+                        setattr(instance, key, value)
+            else:
+                # Create a new record
+                instance = model(**sanitized_data)
+                db.add(instance)
+
+            # Commit the transaction
             db.commit()
             db.refresh(instance)
+
             return instance
         except Exception as e:
             db.rollback()
-            raise e
+            raise Exception(f"Error storing data: {e}")
 
     def retrieve(self, db: Session, model, years: list = None) -> list:
         """

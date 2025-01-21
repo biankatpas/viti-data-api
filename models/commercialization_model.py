@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger, UniqueConstraint
+from sqlalchemy import Column, Integer, String, BigInteger
 
 from .base import Base
 
@@ -23,7 +23,3 @@ class Commercialization(Base):
     year = Column(Integer, nullable=False)
     product = Column(String, nullable=False)
     quantity = Column(BigInteger, nullable=True)
-
-    __table_args__ = (
-        UniqueConstraint("year", "product", name="uq_commercialization_year_product"),
-    )

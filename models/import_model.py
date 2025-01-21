@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger, UniqueConstraint
+from sqlalchemy import Column, Integer, String, BigInteger
 
 from .base import Base
 
@@ -31,7 +31,3 @@ class Import(Base):
     quantity = Column(BigInteger, nullable=True)
     value = Column(BigInteger, nullable=True)
     classification = Column(String, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint("year", "country", "classification", name="uq_import_year_country_classification"),
-    )

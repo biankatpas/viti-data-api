@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger, UniqueConstraint
+from sqlalchemy import Column, Integer, String, BigInteger
 
 from .base import Base
 
@@ -29,7 +29,3 @@ class Processing(Base):
     variety = Column(String, nullable=False)
     quantity = Column(BigInteger, nullable=True)
     classification = Column(String, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint("year", "variety", "classification", name="uq_processing_year_variety_classification"),
-    )

@@ -123,8 +123,14 @@ def translate_columns(df: pd.DataFrame, mapping: dict) -> pd.DataFrame:
 
 
     try:
-        filtered_mapping = {key: value for key, value in mapping.items() if key in df.columns}
+        df.columns = df.columns.str.strip().str.lower()
+
+        normalized_mapping = {key.strip().lower(): value for key, value in mapping.items()}
+
+        filtered_mapping = {key: value for key, value in normalized_mapping.items() if key in df.columns}
+
         return df.rename(columns=filtered_mapping)
+
     except Exception:
         return None
 
