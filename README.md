@@ -40,6 +40,10 @@ Check out the video demonstration of the Viticulture Data API in action:
 
 *Click the thumbnail or [here](https://youtu.be/AkkFmH58Zic) to watch on YouTube.*
 
+[![Watch the Video](https://img.youtube.com/vi/CFGrFyDHiHI/0.jpg)](https://youtu.be/CFGrFyDHiHI)
+
+*Click the thumbnail or [here](https://youtu.be/CFGrFyDHiHI) to watch on YouTube.*
+
 ## API Availability
 
 The Viticulture Data API is now live and accessible at:
