@@ -14,7 +14,7 @@ from services.scraper.scraper_enums import ScraperPages
 router = APIRouter()
 
 
-@app.get("/")
+@router.get("/")
 async def root():
     """
     Root endpoint for the API.
