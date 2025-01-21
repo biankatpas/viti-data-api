@@ -36,7 +36,7 @@ With historical and current data available, the API can support agricultural res
 
 Check out the video demonstration of the Viticulture Data API in action:
 
-[![Watch the Video](https://img.youtube.com/vi/<VIDEO_ID>/0.jpg)](https://youtu.be/AkkFmH58Zic)
+[![Watch the Video](https://img.youtube.com/vi/AkkFmH58Zic/0.jpg)](https://youtu.be/AkkFmH58Zic)
 
 *Click the thumbnail or [here](https://youtu.be/AkkFmH58Zic) to watch on YouTube.*
 
